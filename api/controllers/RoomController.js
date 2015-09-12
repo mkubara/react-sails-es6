@@ -9,41 +9,44 @@
 
 'use strict';
 
-module.exports = {
-	top: function(req, res) {
+class RoomController {
+
+	top(req, res) {
 		sails.log.verbose('RoomController.top');
-		sails.log.verbose('params ' + JSON.stringify(req.allParams()));
+		sails.log.verbose(`params ${JSON.stringify(req.allParams())}`);
 
-		Room.find().then(function(rooms) {
+		Room.find().then((rooms) => {
 			res.view('homepage', {rooms: rooms});
-		}).catch(function(error) {
-			res.send(500, error);
-		});
-	},
-
-	findOne: function(req, res) {
-		sails.log.verbose('RoomController.findOne');
-		sails.log.verbose('params ' + JSON.stringify(req.allParams()));
-
-		var id = req.param('id');
-
-		Room.findOne(id).then(function(room){
-			res.send(room);
-		}).catch(function(error) {
-			res.send(500, error);
-		});
-	},
-
-	create: function(req ,res) {
-		sails.log.verbose('RoomController.create');
-		sails.log.verbose('params ' + JSON.stringify(req.allParams()));
-
-		var params = req.allParams();
-
-		Room.create(params).then(function (room) {
-			res.send(room);
-		}).catch(function(error) {
+		}).catch((error) => {
 			res.send(500, error);
 		});
 	}
-};
+
+	findOne(req, res) {
+		sails.log.verbose('RoomController.findOne');
+		sails.log.verbose(`params ${JSON.stringify(req.allParams())}`);
+
+		const id = req.param('id');
+
+		Room.findOne(id).then((room) => {
+			res.send(room);
+		}).catch((error) => {
+			res.send(500, error);
+		});
+	}
+
+	create(req, res) {
+		sails.log.verbose('RoomController.create');
+		sails.log.verbose(`params ${JSON.stringify(req.allParams())}`);
+
+		const params = req.allParams();
+
+		Room.create(params).then((room) => {
+			res.send(room);
+		}).catch((error) => {
+			res.send(500, error);
+		});
+	}
+}
+
+module.exports = new RoomController();

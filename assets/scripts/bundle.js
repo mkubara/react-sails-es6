@@ -2,17 +2,21 @@
 
 'use strict';
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 'use strct';
 
-var $ = require('jquery');
-
-$(function () {
-  var $roomInputForm = $('#roomInputForm');
-  var $roomInputButton = $('#roomInputButton');
-  var $roomName = $('#roomName');
-  var $messageList = $('#messageList');
-  var $messageInputForm = $('#messageInputForm');
-  var $messageInputButton = $('#messageInputButton');
+(0, _jquery2['default'])(function () {
+  var $roomInputForm = (0, _jquery2['default'])('#roomInputForm');
+  var $roomInputButton = (0, _jquery2['default'])('#roomInputButton');
+  var $roomName = (0, _jquery2['default'])('#roomName');
+  var $messageList = (0, _jquery2['default'])('#messageList');
+  var $messageInputForm = (0, _jquery2['default'])('#messageInputForm');
+  var $messageInputButton = (0, _jquery2['default'])('#messageInputButton');
 
   var addMessages = function addMessages(messages) {
     messages = Array.isArray(messages) ? messages : [messages];
@@ -22,12 +26,12 @@ $(function () {
     });
   };
 
-  var currentRoom;
+  var currentRoom = undefined;
 
   $roomInputButton.on('click', function () {
     var name = $roomInputForm.val();
 
-    $.ajax({
+    _jquery2['default'].ajax({
       method: 'POST',
       url: '/room',
       data: {
@@ -42,13 +46,13 @@ $(function () {
     });
   });
 
-  $('#roomList li').on('click', function (e) {
-    var name = $(this).text();
+  (0, _jquery2['default'])('#roomList li').on('click', function (e) {
+    var name = (0, _jquery2['default'])(e.target).text();
 
     $roomName.text('IN ' + name);
     $messageList.empty();
 
-    $.ajax({
+    _jquery2['default'].ajax({
       method: 'GET',
       url: '/message?room=' + name
     }).done(function (messages) {
@@ -63,7 +67,7 @@ $(function () {
   $messageInputButton.on('click', function () {
     var content = $messageInputForm.val();
 
-    $.ajax({
+    _jquery2['default'].ajax({
       method: 'POST',
       url: '/message',
       data: {
