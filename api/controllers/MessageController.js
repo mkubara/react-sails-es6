@@ -1,4 +1,4 @@
-/* globals Message */
+/* globals Message, sails */
 
 /**
  * MessageController
@@ -9,27 +9,30 @@
 
 'use strict';
 
-class MessageController {
+module.exports = {
+	find: function(req, res) {
+		sails.log.verbose('MessageController.find');
+		sails.log.verbose('params ' + JSON.stringify(req.allParams()));
 
-	find(req, res) {
-		const room = req.param('room');
+		var room = req.param('room');
 
-		Message.find({room: room}).then((messages) => {
+		Message.find({room: room}).then(function(messages) {
 			res.send(messages);
-		}).catch((error) => {
+		}).catch(function(error) {
 			res.send(500, error);
 		});
-	}
+	},
 
-	create(req, res) {
-		const params = req.allParams();
+	create: function(req, res) {
+		sails.log.verbose('MessageController.create');
+		sails.log.verbose('params ' + JSON.stringify(req.allParams()));
 
-		Message.create(params).then((message) => {
+		var params = req.allParams();
+
+		Message.create(params).then(function(message) {
 			res.send(message);
-		}).catch((error) => {
+		}).catch(function(error) {
 			res.send(500, error);
 		});
 	}
-}
-
-module.exports = new MessageController();
+};
