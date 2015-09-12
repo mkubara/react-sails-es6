@@ -1,0 +1,19 @@
+<div id="page">
+  <div id="sidebar">
+    <input type="text" id="roomInputForm" />
+    <button id="roomInputButton">ROOMを作成</button>
+
+    <ul id="roomList">
+      <% _.each(rooms, function(room) { %>
+        <li><%= room.name %></li>
+      <% }) %>
+    </ul>
+  </div>
+
+  <div id="thread">
+    <div id="roomName"></div>
+    <input type="text" id="messageInputForm" />
+    <button id="messageInputButton">送信</button>
+    <ul id="messageList"></ul>
+  </div>
+</div>
