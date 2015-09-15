@@ -2,7 +2,8 @@
 Sails.jsをES6で書いてみるサンプル
 
 ## サーバーサイド
-SailsをES6で書いてみる。ちょうど先日`node v4`のstableがリリースされた。`node v4`からJavaScriptのV8 v4.5エンジン(現行のChromeと同じもの)に変更され基本的なES6構文が使えるようになった。
+
+SailsをES6で書いてみる。ちょうど先日、nodeとio.jsが統合された`nodev4`のstableがリリースされた。(nodeとio.jsの経緯は[コチラ](http://yapcasia.org/2015/talk/show/82e93a96-f60e-11e4-907e-8ab37d574c3a)。)`node v4`からJavaScriptのV8 v4.5エンジン(現行のChromeと同じもの)に変更され基本的なES6構文が使えるようになった。
 
 なので書いてみる。npmでv4をインストール
 
