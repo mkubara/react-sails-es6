@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+
+
 export default class RoomPane extends React.Component {
   constructor() {
     super();
@@ -27,16 +29,12 @@ class RoomList extends React.Component {
   }
 
   render () {
-    // RoomListで表示するRoom要素は、render関数内で動的に作成する。
-    // propsのArrayはmap関数でイテレーションでき、全変換結果を変数として受け取れる
     const roomNodes = this.props.rooms.map((room) => {
-      // key要素を設定すると、再描画をより正確に制御できる（無駄な再描画を抑止できる）
-      return ( <Room key={room.id} name={room.name} /> );
+      return ( <Room key={room.id} name={room.name} onRoomChange={this.props.onRoomChange} /> );
     });
 
-    // 全変換結果をリスト要素としてレンダリングすれば良い
     return (
-      <ul>
+      <ul id="roomList">
         {roomNodes}
       </ul>
     )
@@ -49,10 +47,15 @@ class Room extends React.Component {
     super();
   }
 
+  _handleClick(e) {
+    this.props.onRoomChange(this.props.name);
+  }
+
   render () {
+    // クリック時にルーム変更イベントを発行
     return (
       <li>
-        <p>{this.props.name}</p>
+        <p onClick={this._handleClick.bind(this)}>{this.props.name}</p>
       </li>
     )
   }
@@ -74,7 +77,7 @@ class RoomForm extends React.Component {
   // 例によって .bind(this) を忘れないこと！
   render () {
     return (
-      <div>
+      <div id="roomForm">
         <h3>Create Room</h3>
         <input type="text" ref="inputText"></input>
         <button onClick={this._handleClick.bind(this)}>Create</button>
