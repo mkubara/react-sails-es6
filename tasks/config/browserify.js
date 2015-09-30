@@ -1,7 +1,7 @@
 module.exports = function(grunt) {
   grunt.config.set('browserify', {
 	   dev: {
-       src: ['assets/scripts/bundle.js'],
+       src: ['assets/scripts/app.js'],
        dest: 'assets/js/bundle.js'
 		}
 	});
