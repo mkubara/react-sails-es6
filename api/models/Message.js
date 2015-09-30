@@ -8,7 +8,9 @@
 module.exports = {
 
   attributes: {
-
+    content: 'STRING',
+    room: {
+      model: 'room'
+    }
   }
 };
-

@@ -4,12 +4,14 @@ import React from 'react';
 import RoomPane from './RoomPane';
 import CommentPane from './CommentPane';
 import _ from 'lodash';
+import agent from 'superagent';
 
 
 
 export default class Main extends React.Component {
   constructor() {
   	super();
+/*
     this.state = {
       rooms: [{
         id: 1,
@@ -29,54 +31,116 @@ export default class Main extends React.Component {
       currentRoom: null
     };
     this.state.currentRoom = this.state.rooms[0];
+*/
+    this.state = {
+      rooms: [],
+      currentRoom: null
+    };
   }
+
+
+  componentWillMount() {
+    console.log('componentWillMount');
+
+    agent.get('/room')
+      .set('Accept', 'application/json')
+      .end((err, res)=>
+    {
+      console.log(res.body);
+
+      const newRooms = [].concat(res.body);
+
+      this.setState({
+        rooms: newRooms,
+        currentRoom: newRooms.length ? newRooms[0] : null
+      });
+    });
+  }
+
 
   _changeRoom(roomName) {
     console.log(`changeRoom: ${roomName}`);
 
-    const newRoom = _.find(this.state.rooms, (room) => {
+    const selectedRoom = _.find(this.state.rooms, (room) => {
       return room.name === roomName;
     });
-
-    if (newRoom) {
-      this.setState({currentRoom: newRoom});
+    if (!selectedRoom) {
+      return;
     }
+
+    agent.get(`/message?room=${selectedRoom.id}`)
+      .set('Accept', 'application/json')
+      .end((err, res)=>
+    {
+      console.log(res.body);
+
+      // Stateの更新
+      const newRooms = [].concat(this.state.rooms);
+      const newRoomSelected = _.find(newRooms, (room) => {
+        return room.name === roomName;
+      });
+
+      newRoomSelected.comments = [].concat(res.body);
+
+      console.log(newRooms);
+
+      this.setState({
+        rooms: newRooms,
+        currentRoom: newRoomSelected
+      });
+    });
   }
 
 
   _addRoom(roomName) {
     console.log(`addRoom: ${roomName}`);
 
-    const newRooms = [].concat(this.state.rooms);
+    agent.post('/room')
+      .send({name: roomName})
+      .set('Accept', 'application/json')
+      .end((err, res)=>
+    {
+      // Stateの更新
+      const newRooms = [].concat(this.state.rooms);
 
-    newRooms.push({
-      id: newRooms.length + 1,
-      name: roomName,
-      comments: []
-    });
+      newRooms.push({
+        id: newRooms.length + 1,
+        name: roomName,
+        comments: []
+      });
 
-    this.setState({
-      rooms: newRooms
+      this.setState({
+        rooms: newRooms
+      });
     });
   }
+
 
   _addComment(message) {
     console.log(`addComment: ${message}`);
 
-    const newRooms = [].concat(this.state.rooms);
-    const newRoomSelected = _.find(newRooms, (room) => {
-      return room.name === this.state.currentRoom.name;
-    });
+    agent.post(`/message`)
+      .send({content: message, room: this.state.currentRoom.id})
+      .set('Accept', 'application/json')
+      .end((err, res)=>
+    {
+      // Stateの更新
+      const newRooms = [].concat(this.state.rooms);
+      const newRoomSelected = _.find(newRooms, (room) => {
+        return room.name === this.state.currentRoom.name;
+      });
 
-    newRoomSelected.comments.push({
-      id: newRoomSelected.comments.length + 1,
-      message: message
-    });
+      newRoomSelected.comments.push({
+        id: newRoomSelected.comments.length + 1,
+        content: message
+      });
 
-    this.setState({
-      rooms: newRooms
+      this.setState({
+        rooms: newRooms
+      });
     });
   }
+
 
   render() {
     return (

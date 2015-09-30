@@ -22,6 +22,17 @@ class RoomController {
 		});
 	}
 
+	find(req, res) {
+		sails.log.verbose('RoomController.find');
+		sails.log.verbose(`params ${JSON.stringify(req.allParams())}`);
+
+		Room.find().populate('messages').then((rooms) => {
+			res.send(rooms);
+		}).catch((error) => {
+			res.send(500, error);
+		});
+	}
+
 	findOne(req, res) {
 		sails.log.verbose('RoomController.findOne');
 		sails.log.verbose(`params ${JSON.stringify(req.allParams())}`);
