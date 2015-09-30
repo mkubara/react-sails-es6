@@ -34,7 +34,7 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/keitamoromizato/sailsES6.git"
+    "url": "git://github.com/mkubara/sailsES6.git"
   },
   "author": "keitamoromizato",
   "license": "",
@@ -44,7 +44,7 @@
   },
   "browserify": {
     "transform": [
-      ["babelify", { "stage": 0}]
+      ["babelify", { "stage": 0 }]
     ]
   }
 }
