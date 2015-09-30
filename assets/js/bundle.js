@@ -37,8 +37,12 @@ var RoomPane = (function (_React$Component) {
         _react2['default'].createElement(
           'h2',
           null,
-          'Rooms'
-        )
+          'Rooms (',
+          this.props.rooms.length,
+          ')'
+        ),
+        _react2['default'].createElement(RoomList, { rooms: this.props.rooms, onRoomChange: this.props.onRoomChange }),
+        _react2['default'].createElement(RoomForm, { onAddRoom: this.props.onAddRoom })
       );
     }
   }]);
@@ -47,7 +51,111 @@ var RoomPane = (function (_React$Component) {
 })(_react2['default'].Component);
 
 exports['default'] = RoomPane;
+
+var RoomList = (function (_React$Component2) {
+  _inherits(RoomList, _React$Component2);
+
+  function RoomList() {
+    _classCallCheck(this, RoomList);
+
+    _get(Object.getPrototypeOf(RoomList.prototype), 'constructor', this).call(this);
+  }
+
+  _createClass(RoomList, [{
+    key: 'render',
+    value: function render() {
+      // RoomListで表示するRoom要素は、render関数内で動的に作成する。
+      // propsのArrayはmap関数でイテレーションでき、全変換結果を変数として受け取れる
+      var roomNodes = this.props.rooms.map(function (room) {
+        // key要素を設定すると、再描画をより正確に制御できる（無駄な再描画を抑止できる）
+        return _react2['default'].createElement(Room, { key: room.id, name: room.name });
+      });
+
+      // 全変換結果をリスト要素としてレンダリングすれば良い
+      return _react2['default'].createElement(
+        'ul',
+        null,
+        roomNodes
+      );
+    }
+  }]);
+
+  return RoomList;
+})(_react2['default'].Component);
+
+var Room = (function (_React$Component3) {
+  _inherits(Room, _React$Component3);
+
+  function Room() {
+    _classCallCheck(this, Room);
+
+    _get(Object.getPrototypeOf(Room.prototype), 'constructor', this).call(this);
+  }
+
+  _createClass(Room, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'li',
+        null,
+        _react2['default'].createElement(
+          'p',
+          null,
+          this.props.name
+        )
+      );
+    }
+  }]);
+
+  return Room;
+})(_react2['default'].Component);
+
+var RoomForm = (function (_React$Component4) {
+  _inherits(RoomForm, _React$Component4);
+
+  function RoomForm() {
+    _classCallCheck(this, RoomForm);
+
+    _get(Object.getPrototypeOf(RoomForm.prototype), 'constructor', this).call(this);
+  }
+
+  // クリックイベントを拾って、親のイベントハンドラを呼び出す
+
+  _createClass(RoomForm, [{
+    key: '_handleClick',
+    value: function _handleClick(e) {
+      // propsで受け取ったハンドラを呼び出す。
+      // 入力したテキストは、DOMNodeから拾い上げる
+      this.props.onAddRoom(this.refs.inputText.getDOMNode().value);
+    }
+
+    // 例によって .bind(this) を忘れないこと！
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'div',
+        null,
+        _react2['default'].createElement(
+          'h3',
+          null,
+          'Create Room'
+        ),
+        _react2['default'].createElement('input', { type: 'text', ref: 'inputText' }),
+        _react2['default'].createElement(
+          'button',
+          { onClick: this._handleClick.bind(this) },
+          'Create'
+        )
+      );
+    }
+  }]);
+
+  return RoomForm;
+})(_react2['default'].Component);
+
 module.exports = exports['default'];
+/* RoomFormを作成、イベントハンドラも渡す */
 
 },{"react":176}],2:[function(require,module,exports){
 'use strict';
@@ -97,15 +205,55 @@ var Main = (function (_React$Component) {
     _classCallCheck(this, Main);
 
     _get(Object.getPrototypeOf(Main.prototype), 'constructor', this).call(this);
+
+    // Stateを初期化
+    this.state = {
+      rooms: [{
+        id: 1,
+        name: 'room1',
+        comments: []
+      }, {
+        id: 2,
+        name: 'room2',
+        comments: []
+      }]
+    };
   }
 
+  // 新しいRoomを作成し追加する
+  // 子からの通知を受け取り、自身のStateを書き換えるハンドラ
+
   _createClass(Main, [{
+    key: '_addRoom',
+    value: function _addRoom(roomName) {
+      console.log('addRoom: ' + roomName);
+
+      // NOTE:
+      // Stateは、this.setState({...}); で変更しなければならない
+      // つまりStateは「差し替え」での変更しかできないと考えたほうが良い。
+      // 差し替え後の要素として、旧要素を複製する
+      var newRooms = [].concat(this.state.rooms);
+
+      // 複製要素に、新しいRoom要素を追加
+      newRooms.push({
+        id: newRooms.length + 1,
+        name: roomName,
+        comments: []
+      });
+
+      // 複製した要素で、現在のStateを差し替える。
+      // 変更したStateは、すべての子要素に自動的に通知される
+      this.setState({
+        rooms: newRooms
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
       return _react2['default'].createElement(
         'div',
         { id: 'page' },
-        _react2['default'].createElement(_reactRoomPane2['default'], null)
+        _react2['default'].createElement(_reactRoomPane2['default'], { rooms: this.state.rooms, onAddRoom: this._addRoom.bind(this) })
       );
     }
   }]);
@@ -115,7 +263,7 @@ var Main = (function (_React$Component) {
 
 exports['default'] = Main;
 module.exports = exports['default'];
-/* 子コンポーネントを表示 */
+/* イベントハンドラを子へ渡す、必ず .bind(this) すること！ */
 
 },{"../react/RoomPane":1,"react":176}],4:[function(require,module,exports){
 module.exports = require('./lib/ReactWithAddons');
