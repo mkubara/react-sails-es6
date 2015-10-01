@@ -4,7 +4,7 @@ import React from 'react';
 
 
 
-export default class CommentPane extends React.Component {
+export default class MessagePane extends React.Component {
   constructor() {
     super();
   }
@@ -19,8 +19,8 @@ export default class CommentPane extends React.Component {
       return (
         <div id="thread">
           <h1>Room [{this.props.room.name}]</h1>
-          <CommentList messages={this.props.room.comments}></CommentList>
-          <CommentForm onComment={this.props.onComment} />
+          <MessageList {...this.props.room}></MessageList>
+          <MessageForm {...this.props} />
         </div>
       );
     }
@@ -29,7 +29,7 @@ export default class CommentPane extends React.Component {
 
 
 
-class CommentList extends React.Component {
+class MessageList extends React.Component {
   constructor() {
     super();
   }
@@ -40,15 +40,15 @@ class CommentList extends React.Component {
         <div></div>
       );
     } else {
-      var commentNodes = this.props.messages.map((comment)=> {
-        return ( <Comment key={comment.id} comment={comment} /> );
+      var messageNodes = this.props.messages.map((message)=> {
+        return ( <Message key={message.id} {...message} /> );
       });
 
       return (
         <div>
-          <h2>CommentList</h2>
+          <h2>MessageList</h2>
           <ul>
-            {commentNodes}
+            {messageNodes}
           </ul>
         </div>
       );
@@ -58,7 +58,7 @@ class CommentList extends React.Component {
 
 
 
-class Comment extends React.Component {
+class Message extends React.Component {
   constructor() {
     super();
   }
@@ -66,7 +66,7 @@ class Comment extends React.Component {
   render () {
     return (
       <li>
-        <p>{this.props.comment.content}</p>
+        <p>{this.props.content}</p>
       </li>
     )
   }
@@ -74,20 +74,20 @@ class Comment extends React.Component {
 
 
 
-class CommentForm extends React.Component {
+class MessageForm extends React.Component {
   constructor(props) {
     super(props);
   }
 
   handleClick(e) {
-    this.props.onComment(this.refs.inputText.getDOMNode().value);
+    this.props.onMessage(this.refs.inputText.getDOMNode().value);
   }
 
   render () {
     return (
       <div>
         <input type="text" ref="inputText"></input>
-        <button onClick={this.handleClick.bind(this)}>Comment</button>
+        <button onClick={this.handleClick.bind(this)}>Message</button>
       </div>
     )
   }

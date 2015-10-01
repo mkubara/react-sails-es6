@@ -19,173 +19,13 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var CommentPane = (function (_React$Component) {
-  _inherits(CommentPane, _React$Component);
-
-  function CommentPane() {
-    _classCallCheck(this, CommentPane);
-
-    _get(Object.getPrototypeOf(CommentPane.prototype), 'constructor', this).call(this);
-  }
-
-  _createClass(CommentPane, [{
-    key: 'render',
-    value: function render() {
-      if (!this.props.room) {
-        return _react2['default'].createElement('div', { id: 'thread' });
-      } else {
-        return _react2['default'].createElement(
-          'div',
-          { id: 'thread' },
-          _react2['default'].createElement(
-            'h1',
-            null,
-            'Room [',
-            this.props.room.name,
-            ']'
-          ),
-          _react2['default'].createElement(CommentList, { messages: this.props.room.comments }),
-          _react2['default'].createElement(CommentForm, { onComment: this.props.onComment })
-        );
-      }
-    }
-  }]);
-
-  return CommentPane;
-})(_react2['default'].Component);
-
-exports['default'] = CommentPane;
-
-var CommentList = (function (_React$Component2) {
-  _inherits(CommentList, _React$Component2);
-
-  function CommentList() {
-    _classCallCheck(this, CommentList);
-
-    _get(Object.getPrototypeOf(CommentList.prototype), 'constructor', this).call(this);
-  }
-
-  _createClass(CommentList, [{
-    key: 'render',
-    value: function render() {
-      if (!this.props.messages || !this.props.messages.length) {
-        return _react2['default'].createElement('div', null);
-      } else {
-        var commentNodes = this.props.messages.map(function (comment) {
-          return _react2['default'].createElement(Comment, { key: comment.id, comment: comment });
-        });
-
-        return _react2['default'].createElement(
-          'div',
-          null,
-          _react2['default'].createElement(
-            'h2',
-            null,
-            'CommentList'
-          ),
-          _react2['default'].createElement(
-            'ul',
-            null,
-            commentNodes
-          )
-        );
-      }
-    }
-  }]);
-
-  return CommentList;
-})(_react2['default'].Component);
-
-var Comment = (function (_React$Component3) {
-  _inherits(Comment, _React$Component3);
-
-  function Comment() {
-    _classCallCheck(this, Comment);
-
-    _get(Object.getPrototypeOf(Comment.prototype), 'constructor', this).call(this);
-  }
-
-  _createClass(Comment, [{
-    key: 'render',
-    value: function render() {
-      return _react2['default'].createElement(
-        'li',
-        null,
-        _react2['default'].createElement(
-          'p',
-          null,
-          this.props.comment.content
-        )
-      );
-    }
-  }]);
-
-  return Comment;
-})(_react2['default'].Component);
-
-var CommentForm = (function (_React$Component4) {
-  _inherits(CommentForm, _React$Component4);
-
-  function CommentForm(props) {
-    _classCallCheck(this, CommentForm);
-
-    _get(Object.getPrototypeOf(CommentForm.prototype), 'constructor', this).call(this, props);
-  }
-
-  _createClass(CommentForm, [{
-    key: 'handleClick',
-    value: function handleClick(e) {
-      this.props.onComment(this.refs.inputText.getDOMNode().value);
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return _react2['default'].createElement(
-        'div',
-        null,
-        _react2['default'].createElement('input', { type: 'text', ref: 'inputText' }),
-        _react2['default'].createElement(
-          'button',
-          { onClick: this.handleClick.bind(this) },
-          'Comment'
-        )
-      );
-    }
-  }]);
-
-  return CommentForm;
-})(_react2['default'].Component);
-
-module.exports = exports['default'];
-
-},{"react":178}],2:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
 var _RoomPane = require('./RoomPane');
 
 var _RoomPane2 = _interopRequireDefault(_RoomPane);
 
-var _CommentPane = require('./CommentPane');
+var _MessagePane = require('./MessagePane');
 
-var _CommentPane2 = _interopRequireDefault(_CommentPane);
+var _MessagePane2 = _interopRequireDefault(_MessagePane);
 
 var _lodash = require('lodash');
 
@@ -207,14 +47,14 @@ var Main = (function (_React$Component) {
           rooms: [{
             id: 1,
             name: 'room1',
-            comments: [
+            messages: [
               {id: 1, message: 'asdf'},
               {id: 2, message: 'zxv'}
             ]
           },{
             id: 2,
             name: 'room2',
-            comments: [
+            messages: [
               {id: 1, message: 'qwer'},
               {id: 2, message: 'tyuuuu'}
             ]
@@ -270,7 +110,7 @@ var Main = (function (_React$Component) {
           return room.name === roomName;
         });
 
-        newRoomSelected.comments = [].concat(res.body);
+        newRoomSelected.messages = [].concat(res.body);
 
         console.log(newRooms);
 
@@ -294,7 +134,7 @@ var Main = (function (_React$Component) {
         newRooms.push({
           id: newRooms.length + 1,
           name: roomName,
-          comments: []
+          messages: []
         });
 
         _this3.setState({
@@ -303,11 +143,11 @@ var Main = (function (_React$Component) {
       });
     }
   }, {
-    key: '_addComment',
-    value: function _addComment(message) {
+    key: '_addMessage',
+    value: function _addMessage(message) {
       var _this4 = this;
 
-      console.log('addComment: ' + message);
+      console.log('addMessage: ' + message);
 
       _superagent2['default'].post('/message').send({ content: message, room: this.state.currentRoom.id }).set('Accept', 'application/json').end(function (err, res) {
         // Stateの更新
@@ -316,8 +156,8 @@ var Main = (function (_React$Component) {
           return room.name === _this4.state.currentRoom.name;
         });
 
-        newRoomSelected.comments.push({
-          id: newRoomSelected.comments.length + 1,
+        newRoomSelected.messages.push({
+          id: newRoomSelected.messages.length + 1,
           content: message
         });
 
@@ -333,7 +173,7 @@ var Main = (function (_React$Component) {
         'div',
         { id: 'page' },
         _react2['default'].createElement(_RoomPane2['default'], { rooms: this.state.rooms, onRoomChange: this._changeRoom.bind(this), onAddRoom: this._addRoom.bind(this) }),
-        _react2['default'].createElement(_CommentPane2['default'], { room: this.state.currentRoom, onComment: this._addComment.bind(this) })
+        _react2['default'].createElement(_MessagePane2['default'], { room: this.state.currentRoom, onMessage: this._addMessage.bind(this) })
       );
     }
   }]);
@@ -344,12 +184,176 @@ var Main = (function (_React$Component) {
 exports['default'] = Main;
 module.exports = exports['default'];
 
-},{"./CommentPane":1,"./RoomPane":3,"lodash":5,"react":178,"superagent":179}],3:[function(require,module,exports){
+},{"./MessagePane":2,"./RoomPane":3,"lodash":5,"react":178,"superagent":179}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var MessagePane = (function (_React$Component) {
+  _inherits(MessagePane, _React$Component);
+
+  function MessagePane() {
+    _classCallCheck(this, MessagePane);
+
+    _get(Object.getPrototypeOf(MessagePane.prototype), 'constructor', this).call(this);
+  }
+
+  _createClass(MessagePane, [{
+    key: 'render',
+    value: function render() {
+      if (!this.props.room) {
+        return _react2['default'].createElement('div', { id: 'thread' });
+      } else {
+        return _react2['default'].createElement(
+          'div',
+          { id: 'thread' },
+          _react2['default'].createElement(
+            'h1',
+            null,
+            'Room [',
+            this.props.room.name,
+            ']'
+          ),
+          _react2['default'].createElement(MessageList, this.props.room),
+          _react2['default'].createElement(MessageForm, this.props)
+        );
+      }
+    }
+  }]);
+
+  return MessagePane;
+})(_react2['default'].Component);
+
+exports['default'] = MessagePane;
+
+var MessageList = (function (_React$Component2) {
+  _inherits(MessageList, _React$Component2);
+
+  function MessageList() {
+    _classCallCheck(this, MessageList);
+
+    _get(Object.getPrototypeOf(MessageList.prototype), 'constructor', this).call(this);
+  }
+
+  _createClass(MessageList, [{
+    key: 'render',
+    value: function render() {
+      if (!this.props.messages || !this.props.messages.length) {
+        return _react2['default'].createElement('div', null);
+      } else {
+        var messageNodes = this.props.messages.map(function (message) {
+          return _react2['default'].createElement(Message, _extends({ key: message.id }, message));
+        });
+
+        return _react2['default'].createElement(
+          'div',
+          null,
+          _react2['default'].createElement(
+            'h2',
+            null,
+            'MessageList'
+          ),
+          _react2['default'].createElement(
+            'ul',
+            null,
+            messageNodes
+          )
+        );
+      }
+    }
+  }]);
+
+  return MessageList;
+})(_react2['default'].Component);
+
+var Message = (function (_React$Component3) {
+  _inherits(Message, _React$Component3);
+
+  function Message() {
+    _classCallCheck(this, Message);
+
+    _get(Object.getPrototypeOf(Message.prototype), 'constructor', this).call(this);
+  }
+
+  _createClass(Message, [{
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'li',
+        null,
+        _react2['default'].createElement(
+          'p',
+          null,
+          this.props.content
+        )
+      );
+    }
+  }]);
+
+  return Message;
+})(_react2['default'].Component);
+
+var MessageForm = (function (_React$Component4) {
+  _inherits(MessageForm, _React$Component4);
+
+  function MessageForm(props) {
+    _classCallCheck(this, MessageForm);
+
+    _get(Object.getPrototypeOf(MessageForm.prototype), 'constructor', this).call(this, props);
+  }
+
+  _createClass(MessageForm, [{
+    key: 'handleClick',
+    value: function handleClick(e) {
+      this.props.onMessage(this.refs.inputText.getDOMNode().value);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2['default'].createElement(
+        'div',
+        null,
+        _react2['default'].createElement('input', { type: 'text', ref: 'inputText' }),
+        _react2['default'].createElement(
+          'button',
+          { onClick: this.handleClick.bind(this) },
+          'Message'
+        )
+      );
+    }
+  }]);
+
+  return MessageForm;
+})(_react2['default'].Component);
+
+module.exports = exports['default'];
+
+},{"react":178}],3:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
@@ -387,8 +391,8 @@ var RoomPane = (function (_React$Component) {
           this.props.rooms.length,
           ')'
         ),
-        _react2['default'].createElement(RoomList, { rooms: this.props.rooms, onRoomChange: this.props.onRoomChange }),
-        _react2['default'].createElement(RoomForm, { onAddRoom: this.props.onAddRoom })
+        _react2['default'].createElement(RoomList, this.props),
+        _react2['default'].createElement(RoomForm, this.props)
       );
     }
   }]);
@@ -413,7 +417,7 @@ var RoomList = (function (_React$Component2) {
       var _this = this;
 
       var roomNodes = this.props.rooms.map(function (room) {
-        return _react2['default'].createElement(Room, { key: room.id, name: room.name, onRoomChange: _this.props.onRoomChange });
+        return _react2['default'].createElement(Room, _extends({ key: room.id }, room, { onRoomChange: _this.props.onRoomChange }));
       });
 
       return _react2['default'].createElement(
@@ -523,7 +527,7 @@ var _reactMain2 = _interopRequireDefault(_reactMain);
 // Mainコンポーネントを、id="main"のDOM要素へレンダリング
 _reactAddons2['default'].render(_reactAddons2['default'].createElement(_reactMain2['default'], null), document.getElementById('main'));
 
-},{"../react/Main":2,"react/addons":6}],5:[function(require,module,exports){
+},{"../react/Main":1,"react/addons":6}],5:[function(require,module,exports){
 (function (global){
 /**
  * @license

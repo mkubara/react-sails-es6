@@ -2,7 +2,7 @@
 
 import React from 'react';
 import RoomPane from './RoomPane';
-import CommentPane from './CommentPane';
+import MessagePane from './MessagePane';
 import _ from 'lodash';
 import agent from 'superagent';
 
@@ -16,14 +16,14 @@ export default class Main extends React.Component {
       rooms: [{
         id: 1,
         name: 'room1',
-        comments: [
+        messages: [
           {id: 1, message: 'asdf'},
           {id: 2, message: 'zxv'}
         ]
       },{
         id: 2,
         name: 'room2',
-        comments: [
+        messages: [
           {id: 1, message: 'qwer'},
           {id: 2, message: 'tyuuuu'}
         ]
@@ -80,7 +80,7 @@ export default class Main extends React.Component {
         return room.name === roomName;
       });
 
-      newRoomSelected.comments = [].concat(res.body);
+      newRoomSelected.messages = [].concat(res.body);
 
       console.log(newRooms);
 
@@ -106,7 +106,7 @@ export default class Main extends React.Component {
       newRooms.push({
         id: newRooms.length + 1,
         name: roomName,
-        comments: []
+        messages: []
       });
 
       this.setState({
@@ -116,8 +116,8 @@ export default class Main extends React.Component {
   }
 
 
-  _addComment(message) {
-    console.log(`addComment: ${message}`);
+  _addMessage(message) {
+    console.log(`addMessage: ${message}`);
 
     agent.post(`/message`)
       .send({content: message, room: this.state.currentRoom.id})
@@ -130,8 +130,8 @@ export default class Main extends React.Component {
         return room.name === this.state.currentRoom.name;
       });
 
-      newRoomSelected.comments.push({
-        id: newRoomSelected.comments.length + 1,
+      newRoomSelected.messages.push({
+        id: newRoomSelected.messages.length + 1,
         content: message
       });
 
@@ -146,7 +146,7 @@ export default class Main extends React.Component {
     return (
       <div id="page">
         <RoomPane rooms={this.state.rooms} onRoomChange={this._changeRoom.bind(this)} onAddRoom={this._addRoom.bind(this)} />
-        <CommentPane room={this.state.currentRoom} onComment={this._addComment.bind(this)} />
+        <MessagePane room={this.state.currentRoom} onMessage={this._addMessage.bind(this)} />
       </div>
     )
   }

@@ -13,10 +13,10 @@ export default class RoomPane extends React.Component {
     return (
       <div id="sidebar">
         <h2>Rooms ({this.props.rooms.length})</h2>
-        <RoomList rooms={this.props.rooms} onRoomChange={this.props.onRoomChange} />
+        <RoomList {...this.props} />
 
         {/* RoomFormを作成、イベントハンドラも渡す */}
-        <RoomForm onAddRoom={this.props.onAddRoom} />
+        <RoomForm {...this.props} />
       </div>
     )
   }
@@ -30,7 +30,7 @@ class RoomList extends React.Component {
 
   render () {
     const roomNodes = this.props.rooms.map((room) => {
-      return ( <Room key={room.id} name={room.name} onRoomChange={this.props.onRoomChange} /> );
+      return ( <Room key={room.id} {...room} onRoomChange={this.props.onRoomChange} /> );
     });
 
     return (
