@@ -3,8 +3,10 @@
 import React from 'react';
 import RoomPane from './RoomPane';
 import MessagePane from './MessagePane';
+
 import _ from 'lodash';
-import agent from 'superagent';
+import Promise from 'bluebird';
+import agent from 'superagent-bluebird-promise';
 
 
 
@@ -43,9 +45,8 @@ export default class Main extends React.Component {
     console.log('componentWillMount');
 
     agent.get('/room')
-      .set('Accept', 'application/json')
-      .end((err, res)=>
-    {
+    .set('Accept', 'application/json')
+    .then((res) => {
       console.log(res.body);
 
       const newRooms = [].concat(res.body);
@@ -54,6 +55,9 @@ export default class Main extends React.Component {
         rooms: newRooms,
         currentRoom: newRooms.length ? newRooms[0] : null
       });
+    })
+    .catch((err) => {
+      console.error(err);
     });
   }
 
@@ -69,9 +73,8 @@ export default class Main extends React.Component {
     }
 
     agent.get(`/message?room=${selectedRoom.id}`)
-      .set('Accept', 'application/json')
-      .end((err, res)=>
-    {
+    .set('Accept', 'application/json')
+    .then((res) => {
       console.log(res.body);
 
       // Stateの更新
@@ -88,6 +91,9 @@ export default class Main extends React.Component {
         rooms: newRooms,
         currentRoom: newRoomSelected
       });
+    })
+    .catch((err) => {
+      console.error(err);
     });
   }
 
@@ -96,10 +102,9 @@ export default class Main extends React.Component {
     console.log(`addRoom: ${roomName}`);
 
     agent.post('/room')
-      .send({name: roomName})
-      .set('Accept', 'application/json')
-      .end((err, res)=>
-    {
+    .send({name: roomName})
+    .set('Accept', 'application/json')
+    .then((res) => {
       // Stateの更新
       const newRooms = [].concat(this.state.rooms);
 
@@ -112,6 +117,9 @@ export default class Main extends React.Component {
       this.setState({
         rooms: newRooms
       });
+    })
+    .catch((err) => {
+      console.error(err);
     });
   }
 
@@ -120,10 +128,9 @@ export default class Main extends React.Component {
     console.log(`addMessage: ${message}`);
 
     agent.post(`/message`)
-      .send({content: message, room: this.state.currentRoom.id})
-      .set('Accept', 'application/json')
-      .end((err, res)=>
-    {
+    .send({content: message, room: this.state.currentRoom.id})
+    .set('Accept', 'application/json')
+    .then((res) => {
       // Stateの更新
       const newRooms = [].concat(this.state.rooms);
       const newRoomSelected = _.find(newRooms, (room) => {
@@ -138,6 +145,9 @@ export default class Main extends React.Component {
       this.setState({
         rooms: newRooms
       });
+    })
+    .catch((err) => {
+      console.error(err);
     });
   }
 

@@ -5,10 +5,6 @@ import React from 'react';
 
 
 export default class MessagePane extends React.Component {
-  constructor() {
-    super();
-  }
-
   render () {
     if (!this.props.room) {
       return (
@@ -30,10 +26,6 @@ export default class MessagePane extends React.Component {
 
 
 class MessageList extends React.Component {
-  constructor() {
-    super();
-  }
-
   render () {
     if (!this.props.messages || !this.props.messages.length) {
       return (
@@ -59,10 +51,6 @@ class MessageList extends React.Component {
 
 
 class Message extends React.Component {
-  constructor() {
-    super();
-  }
-
   render () {
     return (
       <li>
@@ -75,11 +63,7 @@ class Message extends React.Component {
 
 
 class MessageForm extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  handleClick(e) {
+  _handleClick(e) {
     this.props.onMessage(this.refs.inputText.getDOMNode().value);
   }
 
@@ -87,7 +71,7 @@ class MessageForm extends React.Component {
     return (
       <div>
         <input type="text" ref="inputText"></input>
-        <button onClick={this.handleClick.bind(this)}>Message</button>
+        <button onClick={this._handleClick.bind(this)}>Message</button>
       </div>
     )
   }

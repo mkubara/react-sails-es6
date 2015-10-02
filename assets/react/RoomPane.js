@@ -5,10 +5,6 @@ import React from 'react';
 
 
 export default class RoomPane extends React.Component {
-  constructor() {
-    super();
-  }
-
   render () {
     return (
       <div id="sidebar">
@@ -24,10 +20,6 @@ export default class RoomPane extends React.Component {
 
 
 class RoomList extends React.Component {
-  constructor() {
-    super();
-  }
-
   render () {
     const roomNodes = this.props.rooms.map((room) => {
       return ( <Room key={room.id} {...room} onRoomChange={this.props.onRoomChange} /> );
@@ -43,10 +35,6 @@ class RoomList extends React.Component {
 
 
 class Room extends React.Component {
-  constructor() {
-    super();
-  }
-
   _handleClick(e) {
     this.props.onRoomChange(this.props.name);
   }
@@ -63,10 +51,6 @@ class Room extends React.Component {
 
 
 class RoomForm extends React.Component {
-  constructor() {
-    super();
-  }
-
   // クリックイベントを拾って、親のイベントハンドラを呼び出す
   _handleClick(e) {
     // propsで受け取ったハンドラを呼び出す。
