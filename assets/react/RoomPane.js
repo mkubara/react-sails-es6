@@ -36,7 +36,7 @@ class RoomList extends React.Component {
 
 class Room extends React.Component {
   _handleClick(e) {
-    this.props.onRoomChange(this.props.name);
+    this.props.onRoomChange(this.props.id);
   }
 
   render () {

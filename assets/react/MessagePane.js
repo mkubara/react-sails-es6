@@ -64,7 +64,7 @@ class Message extends React.Component {
 
 class MessageForm extends React.Component {
   _handleClick(e) {
-    this.props.onMessage(this.refs.inputText.getDOMNode().value);
+    this.props.onAddMessage(this.refs.inputText.getDOMNode().value);
   }
 
   render () {

@@ -5,9 +5,43 @@ import RoomPane from './RoomPane';
 import MessagePane from './MessagePane';
 
 import _ from 'lodash';
+import assign from 'object-assign';
 import Promise from 'bluebird';
 import agent from 'superagent-bluebird-promise';
 
+
+function _createRoom(roomName) {
+  return new Promise((resolve, reject) => {
+    agent.post('/room')
+    .send({name: roomName})
+    .set('Accept', 'application/json')
+    .then((res) => {
+      console.log(res.body);
+      resolve(res.body);
+    })
+    .catch((err) => {
+      console.error(err);
+      reject(err);
+    });
+  });
+}
+
+
+function _createMessage(message, roomId) {
+  return new Promise((resolve, reject) => {
+    agent.post(`/message`)
+    .send({content: message, room: roomId})
+    .set('Accept', 'application/json')
+    .then((res) => {
+      console.log(res.body);
+      resolve(res.body);
+    })
+    .catch((err) => {
+      console.error(err);
+      reject(err);
+    });
+  });
+}
 
 
 export default class Main extends React.Component {
@@ -49,7 +83,7 @@ export default class Main extends React.Component {
     .then((res) => {
       console.log(res.body);
 
-      const newRooms = [].concat(res.body);
+      const newRooms = _.cloneDeep(res.body);
 
       this.setState({
         rooms: newRooms,
@@ -62,11 +96,11 @@ export default class Main extends React.Component {
   }
 
 
-  _changeRoom(roomName) {
-    console.log(`changeRoom: ${roomName}`);
+  _changeRoom(roomId) {
+    console.log(`changeRoom: ${roomId}`);
 
     const selectedRoom = _.find(this.state.rooms, (room) => {
-      return room.name === roomName;
+      return room.id === roomId;
     });
     if (!selectedRoom) {
       return;
@@ -78,14 +112,46 @@ export default class Main extends React.Component {
       console.log(res.body);
 
       // Stateの更新
-      const newRooms = [].concat(this.state.rooms);
-      const newRoomSelected = _.find(newRooms, (room) => {
-        return room.name === roomName;
+      const newState = _.cloneDeep(this.state);
+      newState.currentRoom = _.find(newState.rooms, (room) => {
+        return room.id === roomId;
       });
+      newState.currentRoom.messages = res.body;
 
-      newRoomSelected.messages = [].concat(res.body);
+      this.setState(newState);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  }
 
-      console.log(newRooms);
+
+  _addRoom(roomName) {
+    console.log(`addRoom: ${roomName}`);
+
+    _createRoom(roomName).then((room) => {
+      // Stateの更新
+      const newRooms = _.cloneDeep(this.state.rooms);
+      newRooms.push(room);
+
+      this.setState({ rooms: newRooms });
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+  }
+
+
+  _addMessage(content) {
+    console.log(`addMessage: ${content}`);
+
+    _createMessage(content, this.state.currentRoom.id).then((message) => {
+      // Stateの更新
+      const newRooms = _.cloneDeep(this.state.rooms);
+      const newRoomSelected = _.find(newRooms, (room) => {
+        return room.id === this.state.currentRoom.id;
+      });
+      newRoomSelected.messages.push(message);
 
       this.setState({
         rooms: newRooms,
@@ -98,65 +164,11 @@ export default class Main extends React.Component {
   }
 
 
-  _addRoom(roomName) {
-    console.log(`addRoom: ${roomName}`);
-
-    agent.post('/room')
-    .send({name: roomName})
-    .set('Accept', 'application/json')
-    .then((res) => {
-      // Stateの更新
-      const newRooms = [].concat(this.state.rooms);
-
-      newRooms.push({
-        id: newRooms.length + 1,
-        name: roomName,
-        messages: []
-      });
-
-      this.setState({
-        rooms: newRooms
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-  }
-
-
-  _addMessage(message) {
-    console.log(`addMessage: ${message}`);
-
-    agent.post(`/message`)
-    .send({content: message, room: this.state.currentRoom.id})
-    .set('Accept', 'application/json')
-    .then((res) => {
-      // Stateの更新
-      const newRooms = [].concat(this.state.rooms);
-      const newRoomSelected = _.find(newRooms, (room) => {
-        return room.name === this.state.currentRoom.name;
-      });
-
-      newRoomSelected.messages.push({
-        id: newRoomSelected.messages.length + 1,
-        content: message
-      });
-
-      this.setState({
-        rooms: newRooms
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-  }
-
-
   render() {
     return (
       <div id="page">
         <RoomPane rooms={this.state.rooms} onRoomChange={this._changeRoom.bind(this)} onAddRoom={this._addRoom.bind(this)} />
-        <MessagePane room={this.state.currentRoom} onMessage={this._addMessage.bind(this)} />
+        <MessagePane room={this.state.currentRoom} onAddMessage={this._addMessage.bind(this)} />
       </div>
     )
   }
