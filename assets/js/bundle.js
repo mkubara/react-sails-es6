@@ -44,9 +44,23 @@ var _superagentBluebirdPromise = require('superagent-bluebird-promise');
 var _superagentBluebirdPromise2 = _interopRequireDefault(_superagentBluebirdPromise);
 
 function _createRoom(roomName) {
+  console.log('Main::_createRoom(' + roomName + ')');
+
   return new _bluebird2['default'](function (resolve, reject) {
     _superagentBluebirdPromise2['default'].post('/room').send({ name: roomName }).set('Accept', 'application/json').then(function (res) {
-      console.log(res.body);
+      resolve(res.body);
+    })['catch'](function (err) {
+      console.error(err);
+      reject(err);
+    });
+  });
+}
+
+function _fetchRoom() {
+  console.log('Main::_fetchRoom()');
+
+  return new _bluebird2['default'](function (resolve, reject) {
+    _superagentBluebirdPromise2['default'].get('/room').set('Accept', 'application/json').then(function (res) {
       resolve(res.body);
     })['catch'](function (err) {
       console.error(err);
@@ -56,9 +70,23 @@ function _createRoom(roomName) {
 }
 
 function _createMessage(message, roomId) {
+  console.log('Main::_createMessage(' + message + ', ' + roomId + ')');
+
   return new _bluebird2['default'](function (resolve, reject) {
     _superagentBluebirdPromise2['default'].post('/message').send({ content: message, room: roomId }).set('Accept', 'application/json').then(function (res) {
-      console.log(res.body);
+      resolve(res.body);
+    })['catch'](function (err) {
+      console.error(err);
+      reject(err);
+    });
+  });
+}
+
+function _fetchMessage(roomId) {
+  console.log('Main::_fetchMessage(' + roomId + ')');
+
+  return new _bluebird2['default'](function (resolve, reject) {
+    _superagentBluebirdPromise2['default'].get('/message?room=' + roomId).set('Accept', 'application/json').then(function (res) {
       resolve(res.body);
     })['catch'](function (err) {
       console.error(err);
@@ -108,14 +136,12 @@ var Main = (function (_React$Component) {
 
       console.log('componentWillMount');
 
-      _superagentBluebirdPromise2['default'].get('/room').set('Accept', 'application/json').then(function (res) {
-        console.log(res.body);
-
-        var newRooms = _lodash2['default'].cloneDeep(res.body);
+      _fetchRoom().then(function (rooms) {
+        console.log(rooms);
 
         _this.setState({
-          rooms: newRooms,
-          currentRoom: newRooms.length ? newRooms[0] : null
+          rooms: rooms,
+          currentRoom: rooms.length ? rooms[0] : null
         });
       })['catch'](function (err) {
         console.error(err);
@@ -128,22 +154,15 @@ var Main = (function (_React$Component) {
 
       console.log('changeRoom: ' + roomId);
 
-      var selectedRoom = _lodash2['default'].find(this.state.rooms, function (room) {
-        return room.id === roomId;
-      });
-      if (!selectedRoom) {
-        return;
-      }
-
-      _superagentBluebirdPromise2['default'].get('/message?room=' + selectedRoom.id).set('Accept', 'application/json').then(function (res) {
-        console.log(res.body);
+      _fetchMessage(roomId).then(function (messages) {
+        console.log(messages);
 
         // Stateの更新
         var newState = _lodash2['default'].cloneDeep(_this2.state);
         newState.currentRoom = _lodash2['default'].find(newState.rooms, function (room) {
           return room.id === roomId;
         });
-        newState.currentRoom.messages = res.body;
+        newState.currentRoom.messages = messages;
 
         _this2.setState(newState);
       })['catch'](function (err) {
@@ -158,6 +177,8 @@ var Main = (function (_React$Component) {
       console.log('addRoom: ' + roomName);
 
       _createRoom(roomName).then(function (room) {
+        console.log(room);
+
         // Stateの更新
         var newRooms = _lodash2['default'].cloneDeep(_this3.state.rooms);
         newRooms.push(room);
@@ -175,6 +196,8 @@ var Main = (function (_React$Component) {
       console.log('addMessage: ' + content);
 
       _createMessage(content, this.state.currentRoom.id).then(function (message) {
+        console.log(message);
+
         // Stateの更新
         var newRooms = _lodash2['default'].cloneDeep(_this4.state.rooms);
         var newRoomSelected = _lodash2['default'].find(newRooms, function (room) {

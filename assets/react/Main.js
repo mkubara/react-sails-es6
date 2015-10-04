@@ -11,12 +11,30 @@ import agent from 'superagent-bluebird-promise';
 
 
 function _createRoom(roomName) {
+  console.log(`Main::_createRoom(${roomName})`);
+
   return new Promise((resolve, reject) => {
     agent.post('/room')
     .send({name: roomName})
     .set('Accept', 'application/json')
     .then((res) => {
-      console.log(res.body);
+      resolve(res.body);
+    })
+    .catch((err) => {
+      console.error(err);
+      reject(err);
+    });
+  });
+}
+
+
+function _fetchRoom() {
+  console.log(`Main::_fetchRoom()`);
+
+  return new Promise(function(resolve, reject) {
+    agent.get('/room')
+    .set('Accept', 'application/json')
+    .then((res) => {
       resolve(res.body);
     })
     .catch((err) => {
@@ -28,12 +46,13 @@ function _createRoom(roomName) {
 
 
 function _createMessage(message, roomId) {
+  console.log(`Main::_createMessage(${message}, ${roomId})`);
+
   return new Promise((resolve, reject) => {
     agent.post(`/message`)
     .send({content: message, room: roomId})
     .set('Accept', 'application/json')
     .then((res) => {
-      console.log(res.body);
       resolve(res.body);
     })
     .catch((err) => {
@@ -42,6 +61,24 @@ function _createMessage(message, roomId) {
     });
   });
 }
+
+
+function _fetchMessage(roomId) {
+  console.log(`Main::_fetchMessage(${roomId})`);
+
+  return new Promise(function(resolve, reject) {
+    agent.get(`/message?room=${roomId}`)
+    .set('Accept', 'application/json')
+    .then((res) => {
+      resolve(res.body);
+    })
+    .catch((err) => {
+      console.error(err);
+      reject(err);
+    });
+  });
+}
+
 
 
 export default class Main extends React.Component {
@@ -78,16 +115,12 @@ export default class Main extends React.Component {
   componentWillMount() {
     console.log('componentWillMount');
 
-    agent.get('/room')
-    .set('Accept', 'application/json')
-    .then((res) => {
-      console.log(res.body);
-
-      const newRooms = _.cloneDeep(res.body);
+    _fetchRoom().then((rooms) => {
+      console.log(rooms);
 
       this.setState({
-        rooms: newRooms,
-        currentRoom: newRooms.length ? newRooms[0] : null
+        rooms: rooms,
+        currentRoom: rooms.length ? rooms[0] : null
       });
     })
     .catch((err) => {
@@ -99,24 +132,15 @@ export default class Main extends React.Component {
   _changeRoom(roomId) {
     console.log(`changeRoom: ${roomId}`);
 
-    const selectedRoom = _.find(this.state.rooms, (room) => {
-      return room.id === roomId;
-    });
-    if (!selectedRoom) {
-      return;
-    }
-
-    agent.get(`/message?room=${selectedRoom.id}`)
-    .set('Accept', 'application/json')
-    .then((res) => {
-      console.log(res.body);
+    _fetchMessage(roomId).then((messages) => {
+      console.log(messages);
 
       // Stateの更新
       const newState = _.cloneDeep(this.state);
       newState.currentRoom = _.find(newState.rooms, (room) => {
         return room.id === roomId;
       });
-      newState.currentRoom.messages = res.body;
+      newState.currentRoom.messages = messages;
 
       this.setState(newState);
     })
@@ -130,6 +154,8 @@ export default class Main extends React.Component {
     console.log(`addRoom: ${roomName}`);
 
     _createRoom(roomName).then((room) => {
+      console.log(room);
+
       // Stateの更新
       const newRooms = _.cloneDeep(this.state.rooms);
       newRooms.push(room);
@@ -146,6 +172,8 @@ export default class Main extends React.Component {
     console.log(`addMessage: ${content}`);
 
     _createMessage(content, this.state.currentRoom.id).then((message) => {
+      console.log(message);
+
       // Stateの更新
       const newRooms = _.cloneDeep(this.state.rooms);
       const newRoomSelected = _.find(newRooms, (room) => {
