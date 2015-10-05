@@ -95,6 +95,19 @@ function _fetchMessage(roomId) {
   });
 }
 
+var _testData = {
+  rooms: [{
+    id: 1,
+    name: 'room1',
+    messages: [{ id: 1, message: 'asdf' }, { id: 2, message: 'zxv' }]
+  }, {
+    id: 2,
+    name: 'room2',
+    messages: [{ id: 1, message: 'qwer' }, { id: 2, message: 'tyuuuu' }]
+  }],
+  currentRoom: null
+};
+
 var Main = (function (_React$Component) {
   _inherits(Main, _React$Component);
 
@@ -102,48 +115,34 @@ var Main = (function (_React$Component) {
     _classCallCheck(this, Main);
 
     _get(Object.getPrototypeOf(Main.prototype), 'constructor', this).call(this, props);
+    console.log('Main.constructor');
+    console.log(props);
+
+    this.state = {
+      rooms: [],
+      currentRoom: null
+    };
+
     /*
-        this.state = {
-          rooms: [{
-            id: 1,
-            name: 'room1',
-            messages: [
-              {id: 1, message: 'asdf'},
-              {id: 2, message: 'zxv'}
-            ]
-          },{
-            id: 2,
-            name: 'room2',
-            messages: [
-              {id: 1, message: 'qwer'},
-              {id: 2, message: 'tyuuuu'}
-            ]
-          }],
-          currentRoom: null
-        };
+        this.state = _testData;
         this.state.currentRoom = this.state.rooms[0];
     */
     if (this.props.data) {
-      console.log('Main::constructor::data');
+      console.log('server-side rendering');
 
       this.state = {
         rooms: this.props.data.rooms,
         currentRoom: this.props.data.currentRoom
       };
     } else if (this.props.rooms) {
-      console.log('Main::constructor::rooms');
+      console.log('client-side rerendering');
 
       this.state = {
         rooms: this.props.rooms,
         currentRoom: this.props.currentRoom
       };
     } else {
-      console.log('Main::constructor::None');
-
-      this.state = {
-        rooms: [],
-        currentRoom: null
-      };
+      console.log('invalid data');
     }
 
     console.log(this.state);
@@ -153,26 +152,13 @@ var Main = (function (_React$Component) {
     key: 'componentWillMount',
     value: function componentWillMount() {
       console.log('componentWillMount');
-      /*
-          _fetchRoom().then((rooms) => {
-            console.log(rooms);
-      
-            this.setState({
-              rooms: rooms,
-              currentRoom: rooms.length ? rooms[0] : null
-            });
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      */
     }
   }, {
     key: '_changeRoom',
     value: function _changeRoom(roomId) {
       var _this = this;
 
-      console.log('changeRoom: ' + roomId);
+      console.log('Main._changeRoom: ' + roomId);
 
       _fetchMessage(roomId).then(function (messages) {
         console.log(messages);
@@ -194,7 +180,7 @@ var Main = (function (_React$Component) {
     value: function _addRoom(roomName) {
       var _this2 = this;
 
-      console.log('addRoom: ' + roomName);
+      console.log('Main._addRoom: ' + roomName);
 
       _createRoom(roomName).then(function (room) {
         console.log(room);
@@ -213,7 +199,7 @@ var Main = (function (_React$Component) {
     value: function _addMessage(content) {
       var _this3 = this;
 
-      console.log('addMessage: ' + content);
+      console.log('Main._addMessage: ' + content);
 
       _createMessage(content, this.state.currentRoom.id).then(function (message) {
         console.log(message);

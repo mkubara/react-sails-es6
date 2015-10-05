@@ -33,7 +33,7 @@ module.exports.routes = {
   ***************************************************************************/
   'GET /aaa': 'AaaController.aaa',
   'GET /bbb': 'AaaController.bbb',
-  'GET /chat': 'ViewController.react'
+  'GET /chat': 'ViewController.chat'
 
   /***************************************************************************
   *                                                                          *

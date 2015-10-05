@@ -6,7 +6,10 @@ import Main from '../../assets/react/main'
 
 // ごく簡単なViewを作成
 class ViewController {
-  react(req, res) {
+  chat(req, res) {
+    sails.log.verbose('ViewController.react');
+    sails.log.verbose(`params ${JSON.stringify(req.allParams())}`);
+
     // API
     Room.find().populate('messages').then((rooms) => {
       const initialData = {
@@ -15,20 +18,18 @@ class ViewController {
       };
 
       // View
-      const markup = React.renderToString( React.createElement(
-        Main, {
+      const markup = React.renderToString(
+        React.createElement( Main, {
           data: initialData
-        }
-      ));
-
-      sails.log.verbose(markup);
-      sails.log.verbose(initialData);
+        })
+      );
 
       // render
       res.view('react', {
         markup: markup,
         initialData: JSON.stringify(initialData)
       });
+
 		}).catch((error) => {
       sails.log.error(error);
 

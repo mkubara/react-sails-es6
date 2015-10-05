@@ -80,52 +80,57 @@ function _fetchMessage(roomId) {
 }
 
 
+const _testData = {
+  rooms: [{
+    id: 1,
+    name: 'room1',
+    messages: [
+      {id: 1, message: 'asdf'},
+      {id: 2, message: 'zxv'}
+    ]
+  },{
+    id: 2,
+    name: 'room2',
+    messages: [
+      {id: 1, message: 'qwer'},
+      {id: 2, message: 'tyuuuu'}
+    ]
+  }],
+  currentRoom: null
+};
+
+
 
 export default class Main extends React.Component {
   constructor(props) {
   	super(props);
-/*
+    console.log('Main.constructor');
+    console.log(props);
+
     this.state = {
-      rooms: [{
-        id: 1,
-        name: 'room1',
-        messages: [
-          {id: 1, message: 'asdf'},
-          {id: 2, message: 'zxv'}
-        ]
-      },{
-        id: 2,
-        name: 'room2',
-        messages: [
-          {id: 1, message: 'qwer'},
-          {id: 2, message: 'tyuuuu'}
-        ]
-      }],
+      rooms: [],
       currentRoom: null
-    };
+    }
+/*
+    this.state = _testData;
     this.state.currentRoom = this.state.rooms[0];
 */
     if (this.props.data) {
-      console.log('Main::constructor::data');
+      console.log('server-side rendering');
 
       this.state = {
         rooms: this.props.data.rooms,
         currentRoom: this.props.data.currentRoom
       };
     } else if (this.props.rooms) {
-      console.log('Main::constructor::rooms');
+      console.log('client-side rerendering');
 
       this.state = {
         rooms: this.props.rooms,
         currentRoom: this.props.currentRoom
       };
     } else {
-      console.log('Main::constructor::None');
-
-      this.state = {
-        rooms: [],
-        currentRoom: null
-      }
+      console.log('invalid data');
     }
 
     console.log(this.state);
@@ -134,24 +139,11 @@ export default class Main extends React.Component {
 
   componentWillMount() {
     console.log('componentWillMount');
-/*
-    _fetchRoom().then((rooms) => {
-      console.log(rooms);
-
-      this.setState({
-        rooms: rooms,
-        currentRoom: rooms.length ? rooms[0] : null
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-*/
   }
 
 
   _changeRoom(roomId) {
-    console.log(`changeRoom: ${roomId}`);
+    console.log(`Main._changeRoom: ${roomId}`);
 
     _fetchMessage(roomId).then((messages) => {
       console.log(messages);
@@ -172,7 +164,7 @@ export default class Main extends React.Component {
 
 
   _addRoom(roomName) {
-    console.log(`addRoom: ${roomName}`);
+    console.log(`Main._addRoom: ${roomName}`);
 
     _createRoom(roomName).then((room) => {
       console.log(room);
@@ -190,7 +182,7 @@ export default class Main extends React.Component {
 
 
   _addMessage(content) {
-    console.log(`addMessage: ${content}`);
+    console.log(`Main._addMessage: ${content}`);
 
     _createMessage(content, this.state.currentRoom.id).then((message) => {
       console.log(message);
