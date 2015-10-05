@@ -82,8 +82,8 @@ function _fetchMessage(roomId) {
 
 
 export default class Main extends React.Component {
-  constructor() {
-  	super();
+  constructor(props) {
+  	super(props);
 /*
     this.state = {
       rooms: [{
@@ -105,16 +105,36 @@ export default class Main extends React.Component {
     };
     this.state.currentRoom = this.state.rooms[0];
 */
-    this.state = {
-      rooms: [],
-      currentRoom: null
-    };
+    if (this.props.data) {
+      console.log('Main::constructor::data');
+
+      this.state = {
+        rooms: this.props.data.rooms,
+        currentRoom: this.props.data.currentRoom
+      };
+    } else if (this.props.rooms) {
+      console.log('Main::constructor::rooms');
+
+      this.state = {
+        rooms: this.props.rooms,
+        currentRoom: this.props.currentRoom
+      };
+    } else {
+      console.log('Main::constructor::None');
+
+      this.state = {
+        rooms: [],
+        currentRoom: null
+      }
+    }
+
+    console.log(this.state);
   }
 
 
   componentWillMount() {
     console.log('componentWillMount');
-
+/*
     _fetchRoom().then((rooms) => {
       console.log(rooms);
 
@@ -126,6 +146,7 @@ export default class Main extends React.Component {
     .catch((err) => {
       console.error(err);
     });
+*/
   }
 
 

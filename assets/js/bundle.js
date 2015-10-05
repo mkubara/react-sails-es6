@@ -98,10 +98,10 @@ function _fetchMessage(roomId) {
 var Main = (function (_React$Component) {
   _inherits(Main, _React$Component);
 
-  function Main() {
+  function Main(props) {
     _classCallCheck(this, Main);
 
-    _get(Object.getPrototypeOf(Main.prototype), 'constructor', this).call(this);
+    _get(Object.getPrototypeOf(Main.prototype), 'constructor', this).call(this, props);
     /*
         this.state = {
           rooms: [{
@@ -123,34 +123,54 @@ var Main = (function (_React$Component) {
         };
         this.state.currentRoom = this.state.rooms[0];
     */
-    this.state = {
-      rooms: [],
-      currentRoom: null
-    };
+    if (this.props.data) {
+      console.log('Main::constructor::data');
+
+      this.state = {
+        rooms: this.props.data.rooms,
+        currentRoom: this.props.data.currentRoom
+      };
+    } else if (this.props.rooms) {
+      console.log('Main::constructor::rooms');
+
+      this.state = {
+        rooms: this.props.rooms,
+        currentRoom: this.props.currentRoom
+      };
+    } else {
+      console.log('Main::constructor::None');
+
+      this.state = {
+        rooms: [],
+        currentRoom: null
+      };
+    }
+
+    console.log(this.state);
   }
 
   _createClass(Main, [{
     key: 'componentWillMount',
     value: function componentWillMount() {
-      var _this = this;
-
       console.log('componentWillMount');
-
-      _fetchRoom().then(function (rooms) {
-        console.log(rooms);
-
-        _this.setState({
-          rooms: rooms,
-          currentRoom: rooms.length ? rooms[0] : null
-        });
-      })['catch'](function (err) {
-        console.error(err);
-      });
+      /*
+          _fetchRoom().then((rooms) => {
+            console.log(rooms);
+      
+            this.setState({
+              rooms: rooms,
+              currentRoom: rooms.length ? rooms[0] : null
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+          });
+      */
     }
   }, {
     key: '_changeRoom',
     value: function _changeRoom(roomId) {
-      var _this2 = this;
+      var _this = this;
 
       console.log('changeRoom: ' + roomId);
 
@@ -158,13 +178,13 @@ var Main = (function (_React$Component) {
         console.log(messages);
 
         // Stateの更新
-        var newState = _lodash2['default'].cloneDeep(_this2.state);
+        var newState = _lodash2['default'].cloneDeep(_this.state);
         newState.currentRoom = _lodash2['default'].find(newState.rooms, function (room) {
           return room.id === roomId;
         });
         newState.currentRoom.messages = messages;
 
-        _this2.setState(newState);
+        _this.setState(newState);
       })['catch'](function (err) {
         console.error(err);
       });
@@ -172,7 +192,7 @@ var Main = (function (_React$Component) {
   }, {
     key: '_addRoom',
     value: function _addRoom(roomName) {
-      var _this3 = this;
+      var _this2 = this;
 
       console.log('addRoom: ' + roomName);
 
@@ -180,10 +200,10 @@ var Main = (function (_React$Component) {
         console.log(room);
 
         // Stateの更新
-        var newRooms = _lodash2['default'].cloneDeep(_this3.state.rooms);
+        var newRooms = _lodash2['default'].cloneDeep(_this2.state.rooms);
         newRooms.push(room);
 
-        _this3.setState({ rooms: newRooms });
+        _this2.setState({ rooms: newRooms });
       })['catch'](function (err) {
         console.error(err);
       });
@@ -191,7 +211,7 @@ var Main = (function (_React$Component) {
   }, {
     key: '_addMessage',
     value: function _addMessage(content) {
-      var _this4 = this;
+      var _this3 = this;
 
       console.log('addMessage: ' + content);
 
@@ -199,13 +219,13 @@ var Main = (function (_React$Component) {
         console.log(message);
 
         // Stateの更新
-        var newRooms = _lodash2['default'].cloneDeep(_this4.state.rooms);
+        var newRooms = _lodash2['default'].cloneDeep(_this3.state.rooms);
         var newRoomSelected = _lodash2['default'].find(newRooms, function (room) {
-          return room.id === _this4.state.currentRoom.id;
+          return room.id === _this3.state.currentRoom.id;
         });
         newRoomSelected.messages.push(message);
 
-        _this4.setState({
+        _this3.setState({
           rooms: newRooms,
           currentRoom: newRoomSelected
         });
@@ -571,8 +591,15 @@ var _reactMain = require('../react/Main');
 
 var _reactMain2 = _interopRequireDefault(_reactMain);
 
+// SSRで取得したデータ
+var initialData = JSON.parse(document.getElementById('initial-data').getAttribute('data-json'));
+initialData = initialData || {};
+
+console.log('app');
+console.log(initialData);
+
 // Mainコンポーネントを、id="main"のDOM要素へレンダリング
-_reactAddons2['default'].render(_reactAddons2['default'].createElement(_reactMain2['default'], null), document.getElementById('main'));
+_reactAddons2['default'].render(_reactAddons2['default'].createElement(_reactMain2['default'], initialData), document.getElementById('main'));
 
 },{"../react/Main":1,"react/addons":9}],5:[function(require,module,exports){
 (function (process,global){

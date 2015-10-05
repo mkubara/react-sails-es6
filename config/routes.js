@@ -31,6 +31,9 @@ module.exports.routes = {
   * `assets` directory)                                                      *
   *                                                                          *
   ***************************************************************************/
+  'GET /aaa': 'AaaController.aaa',
+  'GET /bbb': 'AaaController.bbb',
+  'GET /chat': 'ViewController.react'
 
   /***************************************************************************
   *                                                                          *
