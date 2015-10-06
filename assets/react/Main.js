@@ -5,7 +5,6 @@ import RoomPane from './RoomPane';
 import MessagePane from './MessagePane';
 
 import _ from 'lodash';
-import assign from 'object-assign';
 import Promise from 'bluebird';
 import agent from 'superagent-bluebird-promise';
 
@@ -188,16 +187,17 @@ export default class Main extends React.Component {
       console.log(message);
 
       // Stateの更新
+      /*
       const newRooms = _.cloneDeep(this.state.rooms);
       const newRoomSelected = _.find(newRooms, (room) => {
         return room.id === this.state.currentRoom.id;
       });
       newRoomSelected.messages.push(message);
+      */
+      const newState = _.assign({}, this.state);
+      newState.currentRoom.messages.push(message);
 
-      this.setState({
-        rooms: newRooms,
-        currentRoom: newRoomSelected
-      });
+      this.setState(newState);
     })
     .catch((err) => {
       console.error(err);
