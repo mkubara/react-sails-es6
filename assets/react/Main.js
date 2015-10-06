@@ -147,8 +147,8 @@ export default class Main extends React.Component {
     _fetchMessage(roomId).then((messages) => {
       console.log(messages);
 
-      // Stateの更新
-      const newState = _.cloneDeep(this.state);
+      // ルームを変更し、メッセージをFetchしたものに置き換える
+      const newState = _.assign({}, this.state);
       newState.currentRoom = _.find(newState.rooms, (room) => {
         return room.id === roomId;
       });
@@ -168,7 +168,7 @@ export default class Main extends React.Component {
     _createRoom(roomName).then((room) => {
       console.log(room);
 
-      // Stateの更新
+      // ルームを追加
       const newRooms = _.cloneDeep(this.state.rooms);
       newRooms.push(room);
 
@@ -186,14 +186,7 @@ export default class Main extends React.Component {
     _createMessage(content, this.state.currentRoom.id).then((message) => {
       console.log(message);
 
-      // Stateの更新
-      /*
-      const newRooms = _.cloneDeep(this.state.rooms);
-      const newRoomSelected = _.find(newRooms, (room) => {
-        return room.id === this.state.currentRoom.id;
-      });
-      newRoomSelected.messages.push(message);
-      */
+      // 現在のルームにメッセージを追加
       const newState = _.assign({}, this.state);
       newState.currentRoom.messages.push(message);
 
